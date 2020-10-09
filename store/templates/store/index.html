@@ -1,0 +1,235 @@
+<style>
+	
+	span.fa.fa-arrow-right,span.fa.fa-arrow-left{
+		font-size:50px;
+		color: #adad85;
+
+	}
+	a.carousel-control-next ,a.carousel-control-prev {
+		background-color: black;
+		width: 50px;
+		height: 50px;
+		margin-top: 100px;
+	}
+
+	.col-md-3{
+		display:inline-block;
+		margin-left: 10px;
+
+	}
+	.card img{
+		height: 100px;
+	}
+
+</style>
+{% extends 'store/base.html' %}
+{% load static  %}
+
+{% block body %}
+{% for product in allproduct %}
+
+
+<div class="container">
+	
+	<h5 class="my-5">Exclusive deal for you : {{ product.0.sub_cat|title}}</h5>
+
+	{% if forloop.counter0 == 1 %}
+	<div class="container mt-5">
+		{% endif %}
+		<div id="carouselExampleControls{{ forloop.counter}}" class="carousel slide " data-ride="carousel">
+			<div class="carousel-inner">
+				<div class="carousel-item  active">
+					{% for i in product %}
+
+					<div class="col-md-3 ">
+						<div class="card " style="width: 18rem;">
+							<img class="card-img-top" src='/media/{{i.image}}' alt="Card image cap">
+							<div class="card-body">
+								<h5 class="card-title" id="pop{{i.id}}">{{i.product_name|title}}</h5>
+								<p class="card-text">{{i.desc}}</p>
+								<span   id='bt{{i.id}}' class="sp{{i.id}} cart">
+									<button  class="btn btn-success ">Add to Cart</button>
+								</span>
+								<a href="/store/productview/{{i.id}}">
+									<button id="qk{{i.id}}" class="btn btn-danger">Quick View</button>	
+								</a>
+							</div>
+						</div>
+					</div>
+					{% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last%}
+				</div><div class="carousel-item ">
+					{% endif %}
+					{% endfor %}
+				</div>
+
+				<a class="carousel-control-prev" href="#carouselExampleControls{{ forloop.counter }}" role="button" data-slide="prev">
+					<span class="fas fa-angle-left"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="carousel-control-next" href="#carouselExampleControls{{ forloop.counter }}" role="button" data-slide="next">
+					<span class="fas fa-angle-right"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+	{% endblock %}
+	{% block js %}
+
+	<script >
+$(document).ready(function(){
+		trg=[]
+
+		
+		if(localStorage.getItem('cart')==null){
+		 	cart={};
+			console.log("enter in null");
+		}
+		else{
+			cart=JSON.parse(localStorage.getItem('cart'));
+			console.log("enter in parse");
+			
+		}
+
+		$(document).click(function(e){
+			try {
+				if(e.target!=trgType){
+				restoreCart();
+					}
+				// statements
+			} catch(e) {
+				
+						}
+
+		});
+
+		
+		local();
+		
+		
+
+		// });
+function local(){
+		if(localStorage.getItem('cart')==null){
+		 	cart={};
+			console.log("enter in null");
+		}
+		else{
+			cart=JSON.parse(localStorage.getItem('cart'));
+			console.log("enter in parse");
+			
+		}
+		document.getElementById('cartpop').innerHTML= Object.keys(cart).length;
+}
+		updatePopover(cart);
+
+		$('.cart').click(function(e){
+			// console.log('enter in class add to cart');
+			console.log("target="+e.target.parentElement.id);
+			trgType=e.target;
+			local();
+			var strid=this.id.toString();
+			console.log("cart="+strid);
+			if(cart[strid]==undefined){
+				console.log("enter in undefined")
+				qty=1;
+
+				var item_name=$('#pop'+strid.slice(2,)).text();
+				console.log("item name- --=="+item_name);
+				cart[strid]=[qty,item_name];
+			}
+			// console.log(cart);
+
+			localStorage.setItem('cart',JSON.stringify(cart));
+			updateCart(cart,strid);
+			updatePopover(cart);
+			$('#popcart').popover();
+			$('.plus').click(function(){
+					var y=this.id.slice(4,);
+					console.log(cart)
+					var cartvaly=cart["bt"+y][0]
+					cart["bt"+y][0]+=1;
+					localStorage.setItem('cart',JSON.stringify(cart));
+					console.log(cart)
+					console.log("plus="+y)
+					$('#valbt'+y).text(cartvaly+" ");
+
+				});
+
+				
+				$('.minus').click(function(){
+					var x=this.id.slice(5,);
+
+					var cartval=cart["bt"+x][0]
+					
+					cart["bt"+x][0]=Math.max(1,cart["bt"+x][0]-1);
+					localStorage.setItem('cart',JSON.stringify(cart));
+	
+					console.log(x)
+					$('#valbt'+x).text( cartval+" " );
+					
+				});
+
+
+			
+		});	
+
+		
+
+
+		function updateCart(cart,strid){
+
+			// console.log("enter in updatecart")
+
+
+			for (var item in cart){
+				if(strid==item){
+				spid=item.slice(2,)
+					// console.log("this is updatecart value"+spid);
+					var plusid="plus"+spid
+					var minusid="minus"+spid
+					$(".sp"+spid).html("<span><button  id='"+plusid+"'class='btn btn-success plus'>+</button></span> <span id='val"+item+"''> "+cart[item][0]+" </span><span><button  id='"+minusid+"' class='btn btn-success minus'>-</button></span>");
+				}
+			}
+
+
+				updatePopover(cart);
+			}
+
+function updateCartWithoutStrid(cart){
+
+			// console.log("enter in updatecart")
+
+
+			for (var item in cart){
+				
+				spid=item.slice(2,)
+					// console.log("this is updatecart value"+spid);
+					var plusid="plus"+spid
+					var minusid="minus"+spid
+					$(".sp"+spid).html("<span><button  id='"+plusid+"'class='btn btn-success plus'>+</button></span> <span id='val"+item+"''> "+cart[item][0]+" </span><span><button  id='"+minusid+"' class='btn btn-success minus'>-</button></span>");
+				}
+			
+			}
+
+
+function restoreCart(){
+			for (var item in cart){
+				
+					spid=item.slice(2,)
+					// console.log("this is updatecart value"+spid);
+					var plusid="plus"+spid
+					var minusid="minus"+spid
+					$(".sp"+spid).html("<button  class='btn btn-success' >Add to Cart</button>")
+							
+				}
+			}
+
+});
+
+
+		</script>
+		{% endblock %}
+
+

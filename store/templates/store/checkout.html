@@ -1,0 +1,117 @@
+{% extends 'store/base.html' %}
+{% block body %}
+
+<div class="container " style="width: 800px;">
+
+	<h3 class="text-center alert alert-danger"><b>Items in Cart</b></h3>
+
+	<ul class="list-group" id="list">
+		
+	</ul>
+
+	<h3 class=" text-center alert alert-primary">Please fill the form for delivery</h3>
+	<form id="form">
+		<div>
+			<div class="form-group">
+				<label for="inputname">Name</label>
+				<input type="name" class="form-control" id="inputname" placeholder="Name">
+			</div>
+			
+		<div class="form-group">
+			<label for="inputAddress">Address</label>
+			<input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+		</div>
+		<div class="form-group">
+			<label for="inputAddress2">Address 2</label>
+			<input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+		</div>
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="inputCity">City</label>
+				<input type="text" class="form-control" id="inputCity">
+			</div>
+			<div class="form-group col-md-4">
+				<label for="inputstate">State</label>
+				<input type="text" class="form-control" placeholder="states" id="inputstate">
+			</div>
+			<div class="form-group col-md-2">
+				<label for="inputZip">Zip</label>
+				<input type="text" class="form-control" id="inputZip">
+			</div>
+		</div>
+		
+		<button type="submit" class="btn btn-primary">Sign in</button>
+	</form>
+
+</div>
+
+
+{% endblock%}
+
+{% block js %}
+<script >
+$(document).ready(function(){
+
+		if(localStorage.getItem('cart')==null){
+            cart={};
+            console.log("enter in null");
+        }
+        else{
+            cart=JSON.parse(localStorage.getItem('cart'));
+            console.log("enter in parse");
+            
+        }
+		updateList();
+     
+ 		$('#popcart').click(function(e){
+            console.log('enter in popcart');
+            updatePopover(cart);
+
+            $('#popcart').popover('show');
+
+                
+            $('#clearall').click(function(){
+                    console.log('cleared all');
+                    localStorage.clear();
+                    local();
+                    updatePopover(cart);
+                    $('#popcart').popover('hide');
+                    trg=[]
+                    updateList();
+                    
+                });                 
+                
+            
+        });
+
+
+
+        function updateList(){
+        	if($.isEmptyObject(cart)){
+        		console.log('enter in the updateList')
+        		$('#list').html('<h4 class="text-center">Your cart is empty please add some items</h4>');
+        		$('#form :input').attr('disabled',true);
+        	}
+        	else{
+        		var list_str=''
+        		for(var item in cart){
+        		var qty=cart[item][0]
+
+        		var name=cart[item][1]
+        		
+				console.log("dfgdfg"+cart);
+				list_str=list_str+`<li class="list-group-item d-flex justify-content-between align-items-center bg-dark text-light" style= 'height:30px;'>${name}<span class=" badge badge-warning ">${qty}</span></li>`
+				
+				}
+				$('#list').html(list_str);
+				$('#form :input').attr('disabled',false);
+
+		}
+	}
+
+
+
+});
+
+</script>
+{% endblock %}

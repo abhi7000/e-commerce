@@ -1,0 +1,439 @@
+{% extends 'store/base.html' %}
+{% block body %}
+<style >
+	
+	#emaildiv,#namediv,#phonediv,#descdiv{
+		position: relative;
+
+	}
+	.fa{
+
+		position: absolute;
+		right: 10px;
+		margin-top: 10px;
+
+		
+	}
+	.fas{
+
+		position: absolute;
+		right: 10px;
+		margin-top: 10px;
+		
+	}
+	.form-control{
+		display: inline;
+		
+		padding-right: 30px;
+	}
+	
+	#email:focus{
+		color:blue;
+	}
+
+	
+	
+
+	
+
+</style>
+<div class="container mt-4" style="width: 600px;">
+	<h1 class="text-danger text-center">Contact Us</h1>
+	<form  role='form' action="/store/contactus" method="post" >{% csrf_token %}
+		
+		<div id="emaildiv" class="form-group">
+			<label for="email">Email address</label>
+			
+			<input type="email"  class="form-control" name="email" id="email" placeholder="Enter your email address" autocomplete="off">
+			<span id="icon1" class="fa"></span>
+			
+			<h6 id="emailcheck" class="mt-1">  </h6> 
+		</div>
+
+		<div id="namediv" class="form-group">
+			<label for="name"  >Name</label>
+			
+			<input  class="form-control" type="text" name="name" id="name" placeholder="Enter your name " autocomplete="off">
+			<span id="icon2" class="fa"></span>
+			<h6 id="namecheck">  </h6> 
+			
+		</div>
+		<div id="phonediv" class="form-group">
+			<label for="phone">Phone Number</label>
+			<input type="tel" class="form-control" name="phone" id="phone" placeholder="Enter your phone number" autocomplete="off">
+			<span id="icon3"></span>
+			<h6 id="phonecheck"></h6> 
+		</div>
+
+
+		<div id="descdiv" class="form-group">
+			<label for="desc">Description</label>
+			<textarea class="form-control" name="desc" id="desc" rows="3"></textarea>
+			<span id="icon4"></span>
+			<h6 id="desccheck"> </h6> 
+		</div>
+		<input  id='submit' type="submit" class="btn btn-success">
+	</form>
+</div>
+
+
+{% endblock%}
+{% block js%}
+<script>
+	$(document).ready(function(){
+
+		
+
+
+
+
+
+
+		$('#emailcheck').hide();
+		$('#namecheck').hide();
+		$('#phonecheck').hide();
+		$('#desccheck').hide();
+
+		var email_error=false;
+		var name_error=false;
+		var phone_error=false;
+		var desc_error=false;
+
+
+		$('#email').keyup(function(){
+
+			email_validation();
+
+
+});
+
+		function email_validation(){
+
+			var value=$('#email').val();
+			console.log("value=="+value);
+			mod=value.toUpperCase();
+			$('#email').val(mod);
+
+			if(value=="" ){
+				$('#emailcheck').show();
+				$('#emailcheck').html('Please enter email');
+				// if(!$('#icon1').hasClass('fa fa-close')){
+					$('#icon1').removeClass("fas fa-check");
+
+					$('#icon1').addClass("fa fa-close");
+					$('#icon1').css('color','red')
+				// }
+
+				$('#emailcheck').css("color","red");
+				$('#email').css("color","red");
+				$('#email').focus();
+				$('#email').css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+				email_error=true;
+			}
+			else{
+				var error=false;
+				var x=0
+				try {
+					
+					x=value.indexOf('@');
+					if(x==-1) throw 'not found';
+					var index=value.length-x;
+					console.log(index);
+				} catch(e) {
+					// statements
+					error=true;
+					console.log(e);
+				}
+
+				if(!value.includes('@') ||  index<=2 || error|| x<1){
+					$('#emailcheck').show();
+					$('#emailcheck').html('Please enter valid email id');
+					
+					// if(!$('#icon1').hasClass('fa fa-close')){
+						$('#icon1').removeClass("fas fa-check");
+						$('#icon1').addClass("fa fa-close");
+						$('#icon1').css('color','red')
+
+					// }
+
+					
+
+					$('#emailcheck').css("color","red");
+					$('#email').css("color","red");
+					$('#email').focus();
+				
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+					email_error=true;
+				}
+				else{
+					$('#emailcheck').hide();
+					
+
+					$('#icon1').removeClass("fas fa-close");
+
+					$('#icon1').css('color','green')
+					$('#icon1').addClass("fas fa-check");
+
+					$('#email').css("color","green");
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(40, 167, 69, 0.25)"});
+					
+
+				}
+			}
+
+		}
+
+		
+		$('#name').keyup(function(){
+			console.log('enter in the name')
+
+			name_validation();
+		});
+
+
+function name_validation(){
+
+
+			var value=$('#name').val();
+			mod=value.toUpperCase();
+			$('#name').val(mod);
+
+
+			if(value==""){
+				$('#namecheck').show();
+				$('#namecheck').html('Please enter name');
+				// if(!$('#icon1').hasClass('fa fa-close')){
+					$('#icon2').removeClass("fas fa-check");
+
+					$('#icon2').addClass("fa fa-close");
+					$('#icon2').css('color','red')
+				// }
+
+				$('#namecheck').css("color","red");
+				$('#name').css("color","red");
+				$('#name').focus();
+				$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+				name_error=true;
+			}
+			else{
+				if(value.length<3 ||value.length>20){
+					$('#namecheck').show();
+					$('#namecheck').html('Please enter name between 3 to 20');
+					
+					// if(!$('#icon2').hasClass('fa fa-close')){
+						$('#icon2').removeClass("fas fa-check");
+						$('#icon2').addClass("fa fa-close");
+						$('#icon2').css('color','red')
+
+					// }
+
+					
+
+					$('#namecheck').css("color","red");
+					$('#name').css("color","red");
+					$('#name').focus();
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+					name_error=true;
+				}
+				else{
+					$('#namecheck').hide();
+					
+
+					$('#icon2').removeClass("fas fa-close");
+
+					$('#icon2').css('color','green')
+					$('#icon2').addClass("fas fa-check");
+
+					$('#name').css("color","green");
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(40, 167, 69, 0.25)"});
+					
+
+				}
+			}
+
+		}
+
+		$('#phone').keyup(function(){
+			console.log('enter in the phone')
+			phone_validation();
+		});
+
+		function phone_validation(){
+
+
+			var value=$('#phone').val();
+			mod=value.toUpperCase();
+			$('#phone').val(mod);
+
+
+			if(value==""){
+				$('#phonecheck').show();
+				$('#phonecheck').html('Please enter phone');
+				// if(!$('#icon1').hasClass('fa fa-close')){
+					$('#icon3').removeClass("fas fa-check");
+
+					$('#icon3').addClass("fa fa-close");
+					$('#icon3').css('color','red')
+				// }
+
+				$('#phonecheck').css("color","red");
+				$('#phone').css("color","red");
+				$('#phone').focus();
+				$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+				phone_error=true;
+			}
+			else{
+				 var error=false;
+				try {
+					
+					 var y=parseInt(value);
+						if(isNaN(y)) throw 'not a number'
+							console.log(y);
+
+				} catch(e) {
+					error=true
+					// statements
+
+					console.log(e);
+				}
+				if(value.length<10 || value.length>13 || error){
+					$('#phonecheck').show();
+					$('#phonecheck').html('Please enter valid phone number');
+					
+					// if(!$('#icon3').hasClass('fa fa-close')){
+						$('#icon3').removeClass("fas fa-check");
+						$('#icon3').addClass("fa fa-close");
+						$('#icon3').css('color','red')
+
+					// }
+
+					
+
+					$('#phonecheck').css("color","red");
+					$('#phone').css("color","red");
+					$('#phone').focus();
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+					phone_error=true;
+				}
+				else{
+					$('#phonecheck').hide();
+					
+
+					$('#icon3').removeClass("fas fa-close");
+
+					$('#icon3').css('color','green')
+					$('#icon3').addClass("fas fa-check");
+
+					$('#phone').css("color","green");
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(40, 167, 69, 0.25)"});
+					
+
+				}
+			}
+
+		}
+
+
+
+		$('#desc').keyup(function(){
+			console.log('enter in the phone')
+			desc_validation();
+		});
+		function desc_validation(){
+
+
+			var value=$('#desc').val();
+			mod=value.toUpperCase();
+			$('#desc').val(mod);
+
+
+			if(value==""){
+				$('#desccheck').show();
+				$('#desccheck').html('Please enter desc');
+				// if(!$('#icon1').hasClass('fa fa-close')){
+					$('#icon4').removeClass("fas fa-check");
+
+					$('#icon4').addClass("fa fa-close");
+					$('#icon4').css('color','red')
+				// }
+
+				$('#desccheck').css("color","red");
+				$('#desc').css("color","red");
+				$('#desc').focus();
+				$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+				desc_error=true;
+			}
+			if(value.length>300 || value.length<10){
+
+					$('#desccheck').show();
+					$('#desccheck').html('Please enter  desc between 10 to 300 letters');
+					
+					// if(!$('#icon3').hasClass('fa fa-close')){
+						$('#icon3').removeClass("fas fa-check");
+						$('#icon3').addClass("fa fa-close");
+						$('#icon3').css('color','red')
+					// }
+					$('#desccheck').css("color","red");
+					$('#desc').css("color","red");
+					$('#desc').focus();
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(247,77,82, 0.8)"});
+					desc_error=true;
+
+			}
+			else{
+					$('#desccheck').hide();
+					
+
+					$('#icon3').removeClass("fas fa-close");
+
+					$('#icon3').css('color','green')
+					$('#icon3').addClass("fas fa-check");
+
+					$('#desc').css("color","green");
+					$(".form-control:focus").css({"border-color":"#28a745","box-shadow": "0 0 0 0.1rem rgba(40, 167, 69, 0.25)"});
+					
+
+				}
+
+		}
+
+
+
+
+
+		$('form').submit(function(){
+			console.log("enter in submit");
+
+			email_error=false;
+			name_error=false;
+			phone_error=false;
+			desc_error=false;
+
+
+
+			email_validation();
+			name_validation();
+			phone_validation();
+			desc_validation();
+
+
+
+			if((email_error== false) && (name_error== false) && (phone_error== false) && (desc_error== false)){
+				return true;
+			}
+			else{
+				return false;
+			}
+
+		});		
+	
+// $('#submit').click(function(){
+// 	console.log('alert')
+// 	alert("Thanks for contacting us");
+
+// });
+
+});
+
+</script>
+{% endblock %}
